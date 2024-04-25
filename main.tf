@@ -1,20 +1,11 @@
-# Null resource to execute remote commands
-resource "null_resource" "nginx" {
-  provisioner "remote-exec" {
-    inline = [
-      # Update package list
-      "sudo apt update -y",
+provider "aws" {
+  region = "us-east-2"
 
-      # Install nginx
-      "sudo apt install nginx -y",
-
-      # Check if nginx installation was successful before starting the service
-      "if [ $? -eq 0 ]; then sudo systemctl start nginx; else echo 'Error: Nginx installation failed. Please check logs for details.'; fi"
-    ]
-  }
 }
-
-# Output to display NGINX status
-output "nginx_status" {
-  value = "NGINX installed and running remotely."
+resource "aws_instance" "web" {
+  ami = "ami-09b90e09742640522"
+  instance_type = "t2.micro"
+  tags = {
+    name = "HelloWorld"
+  }
 }
